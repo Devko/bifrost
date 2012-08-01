@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"flag"
+	"fmt"
 	conf "github.com/AndriyLytvynov/goconf"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 )
 
 var conf_path = *flag.String("c", "config.json", "path to configuration file")
+var balance = &balanceMap{data: make(map[string]int)}
 
 const (
 	def_addr = ":80"
@@ -88,11 +90,11 @@ func findRoute(req *http.Request, addrs map[string]interface{}) (*url.URL, error
 	}
 	routes, ok := addrs[route].([]interface{})
 	if !ok {
-		return nil, errors.New("bad configuration : " + route + " should be []string")
+		return nil, errors.New("bad configuration : " + fmt.Sprint(addrs[route]) + " should be []string")
 	}
-	dest, ok := routes[0].(string) // TODO balancing
-	if !ok {
-		return nil, errors.New("bad configuration : " + route + " should bs []string")
+	dest, err := balance.getNext(route, routes)
+	if err != nil {
+		return nil, err
 	}
 	res, err := url.Parse(dest)
 	if err != nil {

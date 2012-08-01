@@ -2,7 +2,9 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"path"
+	"sync"
 )
 
 func match(pat string, addrs map[string]interface{}) (string, error) {
@@ -34,4 +36,26 @@ func cleanPath(p string) string {
 		np += "/"
 	}
 	return np
+}
+
+type balanceMap struct {
+	sync.Mutex
+	data map[string]int
+}
+
+func (m *balanceMap) getNext(key string, routes []interface{}) (string, error) {
+	m.Lock()
+	defer m.Unlock()
+	cur, ok := m.data[key]
+	if !ok {
+		cur = 0
+	} else {
+		cur = (cur + 1) % len(routes)
+	}
+	m.data[key] = cur
+	res, ok := routes[cur].(string)
+	if !ok {
+		return "", errors.New("bad configuration : " + fmt.Sprint(routes[0]) + " should be a string")
+	}
+	return res, nil
 }
