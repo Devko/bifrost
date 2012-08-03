@@ -4,7 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	conf "github.com/AndriyLytvynov/goconf"
+	conf "github.com/cr0n/goconf"
 	"log"
 	"net/http"
 	"net/http/httputil"
