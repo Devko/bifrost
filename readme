@@ -1,0 +1,23 @@
+dynamicly configured reverse proxy
+by l.a.v.
+
+This program was not tested well so use at your own risk! I am not responsible for any kind of damage anyone will revieve from it!
+
+This is a plain reverse proxy which updates it's routing table from configuration file over specific periods of time. All configurations are in json encoded file, by default ./config.json, although you can specify different one :
+    bifrost -c /path/to/config
+
+Example syntax of configuration file :
+
+{
+    "addr": ":80",
+    "refresh": 5,
+    "proxy_table": {
+            "/" : ["http://google.com/"]
+        }
+}
+
+    addr - address to listen on (default ":80"), the only field which is not updated dynamically!
+    refresh - time period in seconds, over which configuration file is re-read. Not required, but there'll be a lot of spam in log if you don't specify it
+    proxy_table - routing table in format of map[string][]string. Urls' matching is the same as in Go's net/http package. All urls specified for given pattern are used sequentially for routing. This is the only required parameter.
+
+Each destination url in routing table should specify protocol and path, otherwise it will fail to route or will be ignored.

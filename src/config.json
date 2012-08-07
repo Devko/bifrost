@@ -1,9 +1,0 @@
-{
-    "addr": ":80",
-    "proxy_info": {
-            "/1/" : ["http://localhost:8081", "http://localhost:8083", "http://localhost:8085"],
-            "/1/bang" : ["http://localhost:8084", "http://localhost:8083"],
-            "/3/haha" : ["http://localhost:8083", "http://localhost:8083"],
-            "/2/" : ["http://localhost:8082", "http://localhost:8084"]
-        }
-}
