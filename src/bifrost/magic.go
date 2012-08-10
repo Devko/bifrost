@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"strings"
 	"sync"
 )
 
@@ -100,5 +101,16 @@ func findRoute(req *http.Request, addrs map[string]interface{}) (*url.URL, error
 		}
 		return res, nil
 	}
-    return nil, errors.New("all urls for pattern " + route + " are invalid, abort routing")
+	return nil, errors.New("all urls for pattern " + route + " are invalid, abort routing")
+}
+
+func joinUrls(a, b string) string {
+	aslash, bslash := strings.HasSuffix(a, "/"), strings.HasPrefix(b, "/")
+	switch {
+	case aslash && bslash:
+		return a + b[1:]
+	case !aslash && !bslash:
+		return a + "/" + b
+	}
+	return a + b
 }
