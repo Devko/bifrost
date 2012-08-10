@@ -2,6 +2,6 @@
     "addr": ":80",
     "refresh": 5,
     "proxy_table": {
-            "/" : ["http://google.com/"]
+            "/" : ["http://localhost:8081"]
         }
 }

@@ -8,7 +8,7 @@ import (
 	"net/http/httputil"
 )
 
-var conf_path = *flag.String("c", "config.json", "path to configuration file")
+var conf_path = flag.String("c", "config.json", "path to configuration file")
 var balance = &balanceMap{data: make(map[string]int)}
 
 const (
@@ -16,7 +16,8 @@ const (
 )
 
 func main() {
-	if err := conf.LoadConfig(conf_path); err != nil {
+    flag.Parse()
+	if err := conf.LoadConfig(*conf_path); err != nil {
 		log.Fatal("could not read configuration file :", err)
 	}
 	addr, err := conf.Get("addr")
