@@ -17,7 +17,7 @@ const (
 )
 
 func main() {
-    flag.Parse()
+	flag.Parse()
 	if err := conf.LoadConfig(*conf_path); err != nil {
 		log.Fatal("could not read configuration file :", err)
 	}
@@ -54,7 +54,7 @@ func proxyDirector(req *http.Request) {
 	dest, err := findRoute(req, addrs)
 	if err != nil {
 		log.Println("could not find route for request to :", req.URL.Host+req.URL.Path, "error :", err)
-        if req.URL, err = url.Parse("http://localhost/notfound"); err != nil {
+		if req.URL, err = url.Parse("http://localhost/notfound"); err != nil {
 			log.Println("failed to route to 404 :", err)
 			req.URL = nil
 		}
