@@ -1,7 +1,7 @@
 {
-    "addr": ":80",
+    "addr": ":8080",
     "refresh": 5,
     "proxy_table": {
-            "/" : ["http://localhost:8080"]
+            "/asdf" : ["http://www.devko.de:80"]
         }
 }

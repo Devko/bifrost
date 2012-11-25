@@ -7,14 +7,20 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"fmt"
+	"strings"
 )
 
 var conf_path = flag.String("c", "config.json", "path to configuration file")
 var balance = &balanceMap{data: make(map[string]int)}
 
 const (
-	def_addr = ":80"
+	def_addr = ":8080"
 )
+
+func mainHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+}
 
 func main() {
 	flag.Parse()
@@ -31,7 +37,8 @@ func main() {
 		log.Println("invalid addr parameter specified, using default -", def_addr)
 		address = def_addr
 	}
-	http.Handle("/", &httputil.ReverseProxy{Director: proxyDirector})
+	http.Handle("/challenges/", &httputil.ReverseProxy{Director: proxyDirector})
+	http.HandleFunc("/", mainHandler)
 	http.Handle("/notfound", http.NotFoundHandler())
 	if err = http.ListenAndServe(address, nil); err != nil {
 		log.Fatalln(err)
@@ -63,9 +70,18 @@ func proxyDirector(req *http.Request) {
 	req.URL.Scheme = dest.Scheme
 	req.URL.Host = dest.Host
 	req.URL.Path = joinUrls(dest.Path, req.URL.Path)
+	
+	
+	log.Println("dest.Path: ", dest.Path)
+	log.Println("req.URL.Path: ", req.URL.Path)
+	req.URL.Path = strings.Replace(req.URL.Path, "/challenges", "", 1)
+	log.Println("req.URL.Path: ", req.URL.Path)
+	
 	if dest.RawQuery == "" || req.URL.RawQuery == "" {
 		req.URL.RawQuery = dest.RawQuery + req.URL.RawQuery
+		log.Println("RawQuery: ", req.URL.RawQuery)
 	} else {
 		req.URL.RawQuery = dest.RawQuery + "&" + req.URL.RawQuery
+		log.Println("RawQuery: ", req.URL.RawQuery)
 	}
 }
